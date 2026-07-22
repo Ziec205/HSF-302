@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vé của tôi — SwiftRide</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('tickets')}"></div>
+
+<section class="section">
+  <div class="container">
+    <h1 class="page-title">Vé của tôi</h1>
+
+    <div th:if="${flash}" class="alert alert-success" th:text="${flash}">OK</div>
+
+    <!-- Tabs loc trang thai -->
+    <div class="tabs">
+      <a th:href="@{/customer/tickets}" th:classappend="${tab == 'all'} ? 'active'">Tất cả</a>
+      <a th:href="@{/customer/tickets(status='pending')}" th:classappend="${tab == 'pending'} ? 'active'">Chờ thanh toán</a>
+      <a th:href="@{/customer/tickets(status='confirmed')}" th:classappend="${tab == 'confirmed'} ? 'active'">Đã xác nhận</a>
+      <a th:href="@{/customer/tickets(status='done')}" th:classappend="${tab == 'done'} ? 'active'">Đã đi xong</a>
+      <a th:href="@{/customer/tickets(status='cancelled')}" th:classappend="${tab == 'cancelled'} ? 'active'">Đã hủy</a>
+    </div>
+
+    <!-- Rong -->
+    <div th:if="${bookings.isEmpty()}" class="card card-pad text-center">
+      <h3>Bạn chưa có vé nào</h3>
+      <a class="btn btn-primary mt-2" th:href="@{/customer}">Tìm chuyến</a>
+    </div>
+
+    <!-- Danh sach -->
+    <div class="ticket-grid" th:unless="${bookings.isEmpty()}">
+      <div class="card card-pad ticket-card" th:each="b : ${bookings}">
+        <div class="flex between items-center">
+          <span th:switch="${b.status.name()}">
+            <span th:case="'PENDING_PAYMENT'" class="badge badge-pending">CHỜ THANH TOÁN</span>
+            <span th:case="'CONFIRMED'" class="badge badge-confirmed">ĐÃ XÁC NHẬN</span>
+            <span th:case="'CANCELLED'" class="badge badge-cancelled">ĐÃ HỦY</span>
+            <span th:case="'EXPIRED'" class="badge badge-cancelled">HẾT HẠN</span>
+            <span th:case="'REFUND_PENDING'" class="badge badge-refund">CHỜ HOÀN TIỀN</span>
+            <span th:case="'REFUNDED'" class="badge badge-refund">ĐÃ HOÀN TIỀN</span>
+          </span>
+          <span class="muted small" th:text="'#' + ${#strings.substring(b.bookingId.toString(),0,8)}">#VN-88</span>
+        </div>
+
+        <div class="route" th:text="${b.destinationFrom} + ' → ' + ${b.destinationTo}">TP. HCM → Đà Lạt</div>
+        <div class="ticket-info">
+          <div>
+            <div class="k">KHỞI HÀNH</div>
+            <div th:text="${#temporals.format(b.departureTime, 'HH:mm dd/MM/yyyy')}">08:30 24/10/2026</div>
+          </div>
+          <div>
+            <div class="k">CHỖ / GIÁ</div>
+            <div th:text="${#strings.listJoin(b.tickets.![seatCode], ', ')} + ' • '
+                 + ${#numbers.formatInteger(b.totalPrice, 0, 'POINT')} + 'đ'">12A • 350.000đ</div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a class="btn btn-primary" th:href="@{'/customer/tickets/' + ${b.bookingId}}">Xem vé</a>
+          <a th:if="${b.status.name() == 'PENDING_PAYMENT'}" class="btn btn-accent"
+             th:href="@{'/customer/payment/' + ${b.bookingId}}">Thanh toán ngay</a>
+          <a th:if="${(b.status.name() == 'CONFIRMED') and b.departureTime.isAfter(#temporals.createNow())}"
+             class="btn btn-outline" th:href="@{'/customer/tickets/' + ${b.bookingId}}">Hủy vé</a>
+          <a th:if="${(b.status.name() == 'CONFIRMED') and !b.departureTime.isAfter(#temporals.createNow())
+                and !reviewedIds.contains(b.bookingId)}"
+             class="btn btn-primary" th:href="@{'/customer/tickets/' + ${b.bookingId} + '/review'}">Đánh giá chuyến đi</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>

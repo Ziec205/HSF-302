@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chi tiết vé — SwiftRide</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('tickets')}"></div>
+
+<section class="section">
+  <div class="container-narrow">
+    <a th:href="@{/customer/tickets}" class="small">← Về danh sách vé</a>
+    <h1 class="page-title" style="margin-top:8px;">Chi tiết đơn đặt vé</h1>
+
+    <div th:if="${flash}" class="alert alert-success" th:text="${flash}">OK</div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}">Lỗi</div>
+
+    <div class="card card-pad mb-3">
+      <div class="flex between items-center wrap">
+        <div>
+          <div class="muted small" th:text="'Mã đơn #' + ${#strings.substring(booking.bookingId.toString(),0,8)}">#BT88</div>
+          <div style="font-size:1.3rem;font-weight:700;"
+               th:text="${booking.destinationFrom} + ' → ' + ${booking.destinationTo}">Hà Nội → Sa Pa</div>
+          <div class="muted" th:text="'Khởi hành: ' + ${#temporals.format(booking.departureTime, 'HH:mm dd/MM/yyyy')}">Khởi hành</div>
+        </div>
+        <span th:switch="${booking.status.name()}">
+          <span th:case="'PENDING_PAYMENT'" class="badge badge-pending">CHỜ THANH TOÁN</span>
+          <span th:case="'CONFIRMED'" class="badge badge-confirmed">ĐÃ XÁC NHẬN</span>
+          <span th:case="'CANCELLED'" class="badge badge-cancelled">ĐÃ HỦY</span>
+          <span th:case="'EXPIRED'" class="badge badge-cancelled">HẾT HẠN</span>
+          <span th:case="'REFUND_PENDING'" class="badge badge-refund">CHỜ HOÀN TIỀN</span>
+          <span th:case="'REFUNDED'" class="badge badge-refund">ĐÃ HOÀN TIỀN</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="card card-pad mb-3">
+      <h3>Danh sách vé</h3>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="text-align:left;border-bottom:1px solid var(--outline-variant);">
+            <th style="padding:8px 0;">Ghế</th><th>Hành khách</th><th>Giá vé</th><th>Phí hành lý</th><th>Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="t : ${booking.tickets}" style="border-bottom:1px solid var(--surface-container);">
+            <td style="padding:10px 0;font-weight:700;" th:text="${t.seatCode}">A01</td>
+            <td th:text="${t.passengerName}">Nguyễn Văn A</td>
+            <td th:text="${#numbers.formatInteger(t.ticketPrice, 0, 'POINT')} + 'đ'">350.000đ</td>
+            <td th:text="${#numbers.formatInteger(t.luggageFee, 0, 'POINT')} + 'đ'">0đ</td>
+            <td th:text="${#numbers.formatInteger(t.subTotal, 0, 'POINT')} + 'đ'">350.000đ</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="summary-total"><span>Tổng cộng</span>
+        <span th:text="${#numbers.formatInteger(booking.totalPrice, 0, 'POINT')} + 'đ'">350.000đ</span></div>
+    </div>
+
+    <!-- Hanh dong -->
+    <div class="flex gap-2 wrap">
+      <a th:if="${booking.status.name() == 'PENDING_PAYMENT'}" class="btn btn-accent btn-lg"
+         th:href="@{'/customer/payment/' + ${booking.bookingId}}">Thanh toán ngay</a>
+
+      <a th:if="${(booking.status.name() == 'CONFIRMED') and !booking.departureTime.isAfter(#temporals.createNow())
+            and canReview}"
+         class="btn btn-primary btn-lg" th:href="@{'/customer/tickets/' + ${booking.bookingId} + '/review'}">
+         Đánh giá chuyến đi</a>
+    </div>
+
+    <!-- Huy ve (E5): chi hien khi con huy duoc -->
+    <details class="card card-pad mt-3"
+             th:if="${(booking.status.name() == 'PENDING_PAYMENT' or booking.status.name() == 'CONFIRMED')
+                   and booking.departureTime.isAfter(#temporals.createNow())}">
+      <summary style="cursor:pointer;font-weight:600;color:var(--error);">Hủy vé / Yêu cầu hoàn tiền</summary>
+      <div class="mt-2">
+        <p class="muted">Chính sách hoàn tiền theo thời gian trước khởi hành:
+          <strong>≥24h hoàn 100%, ≥2h hoàn 50%, &lt;2h không hoàn</strong>.
+          Đơn chưa thanh toán sẽ được hủy và giải phóng ghế.</p>
+        <form th:action="@{'/customer/tickets/' + ${booking.bookingId} + '/cancel'}" method="post">
+          <button type="submit" class="btn btn-danger-outline">Xác nhận hủy vé</button>
+        </form>
+      </div>
+    </details>
+  </div>
+</section>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>

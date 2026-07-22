@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đánh giá chuyến đi — SwiftRide</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('tickets')}"></div>
+
+<section class="section">
+  <div class="container-narrow">
+    <a th:href="@{'/customer/tickets/' + ${booking.bookingId}}" class="small">← Về chi tiết vé</a>
+    <h1 class="page-title" style="margin-top:8px;">Đánh giá chuyến đi</h1>
+
+    <div th:if="${error}" class="alert alert-error" th:text="${error}">Lỗi</div>
+
+    <div class="card card-pad">
+      <div class="muted" th:text="${booking.destinationFrom} + ' → ' + ${booking.destinationTo}
+           + ' • ' + ${#temporals.format(booking.departureTime, 'dd/MM/yyyy')}">Hà Nội → Sa Pa</div>
+
+      <form th:action="@{'/customer/tickets/' + ${booking.bookingId} + '/review'}" method="post" class="mt-3">
+        <div class="field">
+          <label>Bạn chấm chuyến đi mấy sao?</label>
+          <div class="stars">
+            <input type="radio" id="s5" name="rating" value="5" required/><label for="s5">★</label>
+            <input type="radio" id="s4" name="rating" value="4"/><label for="s4">★</label>
+            <input type="radio" id="s3" name="rating" value="3"/><label for="s3">★</label>
+            <input type="radio" id="s2" name="rating" value="2"/><label for="s2">★</label>
+            <input type="radio" id="s1" name="rating" value="1"/><label for="s1">★</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Nhận xét (tối đa 1000 ký tự)</label>
+          <textarea name="comment" maxlength="1000" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Gửi đánh giá</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>
