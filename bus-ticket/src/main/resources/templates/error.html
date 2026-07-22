@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đã có lỗi</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}">
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('home')}"></div>
+
+<main class="container" style="padding:48px 0;text-align:center">
+  <h1>Đã có lỗi xảy ra</h1>
+  <p class="muted" th:text="${message} ?: 'Vui lòng thử lại sau.'">Vui lòng thử lại sau.</p>
+  <p><a class="btn btn-primary" th:href="@{/customer}">Về trang chủ</a></p>
+</main>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>
