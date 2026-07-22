@@ -18,6 +18,9 @@ public interface SeatAvailabilityJpaRepo extends JpaRepository<SeatAvailability,
     /** Toan bo ghe cua mot chuyen, dung de ve so do ghe (E2). */
     List<SeatAvailability> findByTrip_IdOrderBySeatCode(UUID tripId);
 
+    /** Cac ghe thuoc mot don dat ve (qua booking_detail) - dung de dung chi tiet ve. */
+    List<SeatAvailability> findByBookingDetail_Booking_Id(UUID bookingId);
+
     /**
      * Khoa bi quan (pessimistic write) cac ghe duoc chon de tranh 2 nguoi dat trung 1 ghe
      * (xu ly race condition trong chuc nang E2 / nghiep vu giu ghe tam).
