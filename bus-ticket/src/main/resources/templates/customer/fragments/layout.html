@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  Fragment dung chung cho toan bo trang Customer: header + footer.
+  Cach dung trong trang con:
+    <head> ... <link rel="stylesheet" th:href="@{/customer/css/app.css}"> </head>
+    <body>
+      <div th:replace="~{customer/fragments/layout :: header('home')}"></div>
+      ... noi dung ...
+      <div th:replace="~{customer/fragments/layout :: footer}"></div>
+-->
+<body>
+
+<header th:fragment="header(active)" class="site-header">
+  <div class="container">
+    <a class="brand" th:href="@{/customer}">SwiftRide</a>
+    <nav class="nav">
+      <a th:href="@{/customer}" th:classappend="${active == 'home'} ? 'active'">Trang chủ</a>
+      <a th:href="@{/customer/tickets}" th:classappend="${active == 'tickets'} ? 'active'">Vé của tôi</a>
+      <a th:href="@{/customer/trips}" th:classappend="${active == 'trips'} ? 'active'">Lịch trình</a>
+      <a th:href="@{/customer}">Hỗ trợ</a>
+    </nav>
+    <div class="header-actions">
+      <a th:href="@{/customer}">Đăng nhập</a>
+      <a class="btn btn-primary" th:href="@{/customer}">Đăng ký</a>
+    </div>
+  </div>
+</header>
+
+<footer th:fragment="footer" class="site-footer">
+  <div class="container">
+    <div>
+      <div class="brand">SwiftRide</div>
+      <div class="muted small">© 2026 SwiftRide. Bảo lưu mọi quyền.</div>
+    </div>
+    <div class="footer-links">
+      <a th:href="@{/customer}">Về chúng tôi</a>
+      <a th:href="@{/customer}">Điều khoản</a>
+      <a th:href="@{/customer}">Bảo mật</a>
+      <a th:href="@{/customer}">Liên hệ</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

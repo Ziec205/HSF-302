@@ -1,0 +1,217 @@
+/* ============================================================
+   SwiftRide - Customer Web  |  Pure CSS (khong dung JS)
+   Bang mau lay tu thiet ke Stitch (Kinetic Horizon)
+   ============================================================ */
+:root {
+  --primary: #003f87;
+  --primary-container: #0056b3;
+  --on-primary: #ffffff;
+  --secondary: #fd8b00;         /* cam nhan manh */
+  --secondary-dark: #e07d00;
+  --tertiary: #006722;          /* xanh la */
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  --surface: #f8f9fa;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f3f4f5;
+  --surface-container: #edeeef;
+  --surface-container-high: #e7e8e9;
+  --on-surface: #191c1d;
+  --on-surface-variant: #424752;
+  --outline: #727784;
+  --outline-variant: #c2c6d4;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.10);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--on-surface);
+  background: var(--surface);
+  line-height: 1.5;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { margin: 0 0 .5rem; line-height: 1.25; }
+
+.container { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+.container-narrow { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+/* ---------- Header ---------- */
+.site-header {
+  background: var(--surface-container-lowest);
+  border-bottom: 1px solid var(--outline-variant);
+  position: sticky; top: 0; z-index: 20;
+}
+.site-header .container {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px;
+}
+.brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -.02em; }
+.brand:hover { text-decoration: none; }
+.nav { display: flex; gap: 28px; align-items: center; }
+.nav a { color: var(--on-surface-variant); font-weight: 500; }
+.nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 4px; }
+.header-actions { display: flex; gap: 16px; align-items: center; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px; border-radius: var(--radius-sm); font-weight: 600;
+  border: 1px solid transparent; cursor: pointer; font-size: .95rem;
+  transition: filter .15s, background .15s; text-decoration: none;
+}
+.btn:hover { text-decoration: none; filter: brightness(.96); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-accent  { background: var(--secondary); color: #fff; }
+.btn-accent:hover { background: var(--secondary-dark); }
+.btn-outline { background: #fff; color: var(--primary); border-color: var(--outline-variant); }
+.btn-danger-outline { background: #fff; color: var(--error); border-color: var(--error); }
+.btn-block { width: 100%; }
+.btn-lg { padding: 14px 26px; font-size: 1rem; }
+.btn[disabled], .btn.disabled { background: var(--surface-container-high); color: var(--outline); cursor: not-allowed; border-color: transparent; }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.card-pad { padding: 24px; }
+.section { padding: 40px 0; }
+.muted { color: var(--on-surface-variant); }
+.small { font-size: .85rem; }
+.eyebrow { color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; }
+
+/* ---------- Hero + search ---------- */
+.hero {
+  background: linear-gradient(135deg, var(--primary), #14243f);
+  color: #fff; padding: 64px 0 90px;
+}
+.hero h1 { font-size: 2.6rem; font-weight: 800; text-align: center; }
+.hero p { text-align: center; opacity: .85; max-width: 640px; margin: 0 auto; }
+.search-bar {
+  background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+  padding: 16px; display: grid; grid-template-columns: 1fr 1fr 200px auto; gap: 12px;
+  margin-top: 28px; align-items: end;
+}
+.search-bar .field label { display: block; font-size: .72rem; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+
+/* ---------- Forms ---------- */
+.field { margin-bottom: 16px; }
+.field > label { display: block; font-weight: 600; margin-bottom: 6px; font-size: .9rem; }
+input[type=text], input[type=date], input[type=number], input[type=email], textarea, select {
+  width: 100%; padding: 11px 12px; border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-sm); font-size: .95rem; font-family: inherit; background: #fff;
+  color: var(--on-surface);
+}
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
+textarea { resize: vertical; min-height: 90px; }
+.form-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.form-row .field { flex: 1; min-width: 180px; }
+
+/* ---------- Badges ---------- */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+.badge-pending  { background: #fff3e0; color: #8a4b00; }
+.badge-confirmed{ background: #e3f6e8; color: #006722; }
+.badge-cancelled{ background: var(--surface-container-high); color: var(--on-surface-variant); }
+.badge-refund   { background: #e5efff; color: var(--primary); }
+.badge-seats    { background: #e5efff; color: var(--primary); }
+
+/* ---------- Alerts ---------- */
+.alert { padding: 14px 16px; border-radius: var(--radius-sm); margin-bottom: 18px; font-weight: 500; }
+.alert-error   { background: var(--error-container); color: var(--on-error-container); }
+.alert-success { background: #e3f6e8; color: #006722; }
+.alert-info    { background: #e5efff; color: var(--primary); }
+
+/* ---------- Trip result cards ---------- */
+.trip-card { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding: 20px 24px; margin-bottom: 16px; }
+.trip-route { font-size: 1.15rem; font-weight: 700; }
+.trip-meta { color: var(--on-surface-variant); font-size: .9rem; display: flex; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
+.trip-price { text-align: right; }
+.trip-price .amount { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+
+/* ---------- Seat map ---------- */
+.seat-legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: .85rem; margin: 8px 0 20px; }
+.seat-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-box { width: 16px; height: 16px; border-radius: 4px; display: inline-block; border: 1px solid var(--outline-variant); }
+.lb-free { background: #fff; }
+.lb-selected { background: var(--tertiary); border-color: var(--tertiary); }
+.lb-held { background: #ffd9b3; border-color: #ffb77d; }
+.lb-booked { background: var(--surface-container-high); }
+
+.bus-frame { background: var(--surface-container-low); border: 1px solid var(--outline-variant); border-radius: var(--radius); padding: 22px; max-width: 420px; }
+.bus-front { text-align: center; color: var(--on-surface-variant); font-weight: 600; font-size: .8rem; margin-bottom: 16px; }
+.seat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+/* Ghe = label boc checkbox; dung :checked de doi mau (khong JS) */
+.seat { position: relative; }
+.seat input { position: absolute; opacity: 0; width: 0; height: 0; }
+.seat .seat-cell {
+  display: flex; align-items: center; justify-content: center;
+  height: 46px; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm);
+  background: #fff; font-weight: 600; cursor: pointer; font-size: .9rem;
+}
+.seat input:checked + .seat-cell { background: var(--tertiary); color: #fff; border-color: var(--tertiary); }
+.seat.taken .seat-cell { background: var(--surface-container-high); color: var(--outline); cursor: not-allowed; }
+.seat.held .seat-cell { background: #ffd9b3; color: #8a4b00; border-color: #ffb77d; cursor: not-allowed; }
+
+/* Thong tin hanh khach hien khi ghe duoc chon (pure CSS reveal) */
+.pax-fields { display: none; margin-top: 10px; padding: 12px; background: var(--surface-container-low); border-radius: var(--radius-sm); }
+.seat-block input.seat-check:checked ~ .pax-fields { display: block; }
+.seat-block { border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); padding: 12px; }
+
+/* ---------- Order summary ---------- */
+.summary-head { background: var(--primary); color: #fff; padding: 18px 22px; border-radius: var(--radius) var(--radius) 0 0; font-weight: 700; }
+.summary-body { padding: 22px; }
+.summary-row { display: flex; justify-content: space-between; padding: 6px 0; }
+.summary-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; color: var(--primary); border-top: 1px solid var(--outline-variant); margin-top: 10px; padding-top: 12px; }
+
+/* ---------- My tickets ---------- */
+.tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--outline-variant); margin-bottom: 24px; }
+.tabs a { padding: 12px 2px; color: var(--on-surface-variant); font-weight: 600; }
+.tabs a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+.ticket-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.ticket-card .route { font-size: 1.15rem; font-weight: 700; margin: 8px 0; }
+.ticket-info { display: flex; gap: 40px; margin: 12px 0; }
+.ticket-info .k { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--on-surface-variant); font-weight: 700; }
+.card-actions { display: flex; gap: 12px; margin-top: 16px; }
+
+/* ---------- Star rating (pure CSS radio) ---------- */
+.stars { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; }
+.stars input { display: none; }
+.stars label { font-size: 2rem; color: var(--outline-variant); cursor: pointer; padding: 0 3px; }
+.stars input:checked ~ label,
+.stars label:hover, .stars label:hover ~ label { color: var(--secondary); }
+
+/* ---------- Popular routes / grid ---------- */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.route-thumb { height: 150px; background: var(--surface-container-high); border-radius: var(--radius) var(--radius) 0 0; display:flex; align-items:center; justify-content:center; color: var(--outline); }
+
+/* ---------- Footer ---------- */
+.site-footer { border-top: 1px solid var(--outline-variant); background: var(--surface-container-lowest); margin-top: 48px; }
+.site-footer .container { display: flex; justify-content: space-between; align-items: center; padding: 28px 20px; flex-wrap: wrap; gap: 12px; }
+.site-footer .brand { font-size: 1.25rem; }
+.footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer-links a { color: var(--on-surface-variant); font-size: .9rem; }
+
+/* ---------- Utilities ---------- */
+.mt-0{margin-top:0}.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mt-3{margin-top:24px}
+.mb-2{margin-bottom:16px}.mb-3{margin-bottom:24px}
+.text-center{text-align:center}.flex{display:flex}.between{justify-content:space-between}
+.gap-2{gap:16px}.items-center{align-items:center}.wrap{flex-wrap:wrap}
+.page-title{font-size:2rem;font-weight:800;margin:24px 0}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .search-bar { grid-template-columns: 1fr; }
+  .grid-3, .grid-2, .ticket-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2rem; }
+  .nav { display: none; }
+}
