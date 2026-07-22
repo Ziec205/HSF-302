@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SwiftRide — Đặt vé xe bus</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('home')}"></div>
+
+<!-- HERO + form tim chuyen (E1) -->
+<section class="hero">
+  <div class="container">
+    <h1>Du lịch thông minh, Di chuyển nhanh chóng</h1>
+    <p>Vận tải liên tỉnh cao cấp với cam kết đúng giờ và tiện nghi hiện đại.
+       Hành trình của bạn bắt đầu chỉ với một cú nhấp chuột.</p>
+
+    <form class="search-bar" th:action="@{/customer/trips}" method="get">
+      <div class="field">
+        <label>Điểm đi</label>
+        <input type="text" name="from" placeholder="VD: Hà Nội" required/>
+      </div>
+      <div class="field">
+        <label>Điểm đến</label>
+        <input type="text" name="to" placeholder="VD: Sa Pa" required/>
+      </div>
+      <div class="field">
+        <label>Ngày đi</label>
+        <input type="date" name="date" th:value="${today}" required/>
+      </div>
+      <button type="submit" class="btn btn-accent btn-lg">TÌM CHUYẾN</button>
+    </form>
+  </div>
+</section>
+
+<!-- Uu diem -->
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">Ưu điểm của SwiftRide</div>
+    <h2>Tái định nghĩa trải nghiệm di chuyển</h2>
+    <div class="grid-2 mt-3">
+      <div class="card card-pad">
+        <h3>99.8% Chính xác về thời gian</h3>
+        <p class="muted">Thuật toán định tuyến thông minh và giám sát giao thông thời gian thực
+          đảm bảo bạn đến nơi đúng như cam kết.</p>
+      </div>
+      <div class="card card-pad" style="background:var(--primary);color:#fff;border:none;">
+        <h3 style="color:#fff;">Swift Connect™</h3>
+        <p style="opacity:.85;">Wi-Fi vệ tinh tốc độ cao miễn phí và ổ cắm điện đa năng
+          tại mỗi ghế ngồi trên toàn đội xe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tuyen pho bien -->
+<section class="section" style="background:var(--surface-container-low);">
+  <div class="container">
+    <div class="flex between items-center mb-3">
+      <h2 style="margin:0;">Tuyến đường phổ biến</h2>
+      <a th:href="@{/customer/trips}">Xem tất cả →</a>
+    </div>
+    <div class="grid-3">
+      <div class="card" th:each="r : ${popular}">
+        <div class="route-thumb">🚌</div>
+        <div class="card-pad">
+          <div style="font-weight:700;" th:text="${r.label}">Hà Nội đi Sa Pa</div>
+          <div class="muted small mt-1" th:text="${r.note}">Từ 350.000đ</div>
+          <a class="btn btn-outline btn-block mt-2"
+             th:href="@{/customer/trips(from=${r.from},to=${r.to},date=${today})}">ĐẶT CHỖ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>

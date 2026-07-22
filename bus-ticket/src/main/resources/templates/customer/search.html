@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kết quả tìm kiếm — SwiftRide</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('trips')}"></div>
+
+<!-- Thanh tim kiem lai -->
+<section style="background:var(--surface-container-low);border-bottom:1px solid var(--outline-variant);">
+  <div class="container" style="padding:20px;">
+    <form class="form-row items-center" th:action="@{/customer/trips}" method="get">
+      <div class="field" style="margin:0;"><label>Điểm đi</label>
+        <input type="text" name="from" th:value="${from}" required/></div>
+      <div class="field" style="margin:0;"><label>Điểm đến</label>
+        <input type="text" name="to" th:value="${to}" required/></div>
+      <div class="field" style="margin:0;"><label>Ngày đi</label>
+        <input type="date" name="date" th:value="${date}" required/></div>
+      <button type="submit" class="btn btn-primary">Thay đổi</button>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div th:if="${error}" class="alert alert-error" th:text="${error}">Lỗi</div>
+
+    <div th:unless="${error}">
+      <h2 th:text="${trips != null ? trips.size() + ' chuyến xe tìm thấy' : 'Tìm chuyến'}">Chuyến</h2>
+      <p class="muted" th:if="${from != null}"
+         th:text="${from} + ' đi ' + ${to} + ' vào ' + ${date}">Hà Nội đi Sa Pa</p>
+
+      <!-- Rong -->
+      <div th:if="${trips != null and trips.isEmpty()}" class="card card-pad text-center mt-3">
+        <h3>Không tìm thấy chuyến phù hợp</h3>
+        <p class="muted">Vui lòng thử ngày khác hoặc tuyến gần đó.</p>
+        <a class="btn btn-primary mt-2" th:href="@{/customer}">Về trang tìm kiếm</a>
+      </div>
+
+      <!-- Danh sach chuyen -->
+      <div class="mt-3" th:if="${trips != null and !trips.isEmpty()}">
+        <div class="card trip-card" th:each="t : ${trips}">
+          <div>
+            <div class="trip-route" th:text="${t.destinationFrom} + ' → ' + ${t.destinationTo}">Hà Nội → Sa Pa</div>
+            <div class="trip-meta">
+              <span>🕐 <span th:text="${#temporals.format(t.departureTime, 'HH:mm dd/MM/yyyy')}">09:30</span></span>
+              <span th:if="${t.busName}" th:text="'🚌 ' + ${t.busName}">SwiftRide</span>
+              <span class="badge badge-seats" th:text="${t.availableSeats} + ' ghế trống'">16 ghế trống</span>
+            </div>
+          </div>
+          <div class="trip-price">
+            <div th:if="${t.availableSeats > 0}">
+              <a class="btn btn-accent" th:href="@{/customer/book(tripId=${t.tripId})}">Chọn chuyến</a>
+            </div>
+            <div th:unless="${t.availableSeats > 0}">
+              <button class="btn disabled" disabled>Hết ghế</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>

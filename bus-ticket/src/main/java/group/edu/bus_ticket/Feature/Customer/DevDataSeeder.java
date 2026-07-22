@@ -78,17 +78,17 @@ public class DevDataSeeder implements CommandLineRunner {
                 BusType.SEATED, BusCapacity.SEAT_16, Status.AVAILABLE));
 
         LocalDateTime tomorrow = LocalDateTime.now().plusDays(1).withHour(9).withMinute(30).withSecond(0).withNano(0);
-        Trip tripA = tripRepo.save(new Trip("Ha Noi", "Sa Pa", tomorrow, "Tran Van Tai",
+        Trip tripA = tripRepo.save(new Trip("Hà Nội", "Sa Pa", tomorrow, "Trần Văn Tài",
                 Status.AVAILABLE, route, bus));
         seedSeats(tripA);
 
-        Trip tripB = tripRepo.save(new Trip("Ha Noi", "Sa Pa", tomorrow.withHour(14),
-                "Le Van Xe", Status.AVAILABLE, route, bus));
+        Trip tripB = tripRepo.save(new Trip("Hà Nội", "Sa Pa", tomorrow.withHour(14),
+                "Lê Văn Xe", Status.AVAILABLE, route, bus));
         seedSeats(tripB);
 
         // Mot chuyen da di xong + don da thanh toan cua khach -> test E4/E6
         LocalDateTime yesterday = LocalDateTime.now().minusDays(2).withHour(8).withMinute(0).withSecond(0).withNano(0);
-        Trip tripPast = tripRepo.save(new Trip("Da Nang", "Hoi An", yesterday, "Pham Van Lai",
+        Trip tripPast = tripRepo.save(new Trip("Đà Nẵng", "Hội An", yesterday, "Phạm Văn Lái",
                 Status.AVAILABLE, route, bus));
         List<SeatAvailability> pastSeats = seedSeats(tripPast);
 
