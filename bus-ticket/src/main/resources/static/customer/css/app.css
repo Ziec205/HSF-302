@@ -161,10 +161,19 @@ textarea { resize: vertical; min-height: 90px; }
 .seat.taken .seat-cell { background: var(--surface-container-high); color: var(--outline); cursor: not-allowed; }
 .seat.held .seat-cell { background: #ffd9b3; color: #8a4b00; border-color: #ffb77d; cursor: not-allowed; }
 
+/* Danh sach ghe dang khoi (moi ghe 1 the) - chon la hien form hanh khach */
+.seat-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.seat-block { display: block; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); padding: 12px; background: #fff; cursor: pointer; }
+.seat-block .seat-cell { justify-content: flex-start; height: auto; border: none; padding: 0; background: transparent; }
+.seat-block input.seat-check:checked + .seat-cell { background: transparent; color: var(--tertiary); }
+.seat-block:has(input.seat-check:checked) { border-color: var(--tertiary); box-shadow: 0 0 0 2px rgba(0,103,34,.15); }
+
 /* Thong tin hanh khach hien khi ghe duoc chon (pure CSS reveal) */
 .pax-fields { display: none; margin-top: 10px; padding: 12px; background: var(--surface-container-low); border-radius: var(--radius-sm); }
 .seat-block input.seat-check:checked ~ .pax-fields { display: block; }
-.seat-block { border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); padding: 12px; }
+.seat-block.taken { background: var(--surface-container-high); color: var(--outline); cursor: not-allowed; }
+.seat-block.held  { background: #fff3e6; color: #8a4b00; cursor: not-allowed; }
+.seat-tag { font-weight: 700; font-size: 1rem; }
 
 /* ---------- Order summary ---------- */
 .summary-head { background: var(--primary); color: #fff; padding: 18px 22px; border-radius: var(--radius) var(--radius) 0 0; font-weight: 700; }

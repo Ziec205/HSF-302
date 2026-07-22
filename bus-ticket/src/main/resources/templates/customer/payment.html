@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thanh toán — SwiftRide</title>
+  <link rel="stylesheet" th:href="@{/customer/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{customer/fragments/layout :: header('tickets')}"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">Thanh toán</div>
+    <h1 class="page-title" style="margin-top:6px;">Thanh toán an toàn</h1>
+
+    <div th:if="${error}" class="alert alert-error" th:text="${error}">Lỗi</div>
+
+    <div class="alert alert-error" th:if="${booking.holdExpiresAt != null}">
+      🕐 Ghế của bạn đang được giữ đến
+      <strong th:text="${#temporals.format(booking.holdExpiresAt, 'HH:mm')}">14:57</strong>.
+      Vui lòng hoàn tất thanh toán trước khi hết thời gian.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;" class="book-layout">
+      <!-- Chon phuong thuc -->
+      <form th:action="@{'/customer/payment/' + ${booking.bookingId}}" method="post">
+        <h3>Chọn phương thức thanh toán</h3>
+        <div class="card card-pad">
+          <label class="seat-block" style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+            <input type="radio" name="method" value="COD" checked/>
+            <div><strong>COD</strong><div class="muted small">Thanh toán khi lên xe</div></div>
+          </label>
+          <label class="seat-block" style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+            <input type="radio" name="method" value="CASH"/>
+            <div><strong>Tiền mặt</strong><div class="muted small">Tại văn phòng/quầy vé</div></div>
+          </label>
+          <label class="seat-block" style="display:flex;gap:12px;align-items:center;">
+            <input type="radio" name="method" value="BANK_TRANSFER"/>
+            <div><strong>Chuyển khoản ngân hàng</strong><div class="muted small">Thanh toán qua mã QR hoặc STK</div></div>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-accent btn-lg btn-block mt-3">Thanh toán →</button>
+        <p class="text-center muted small mt-1">🔒 Giao dịch được bảo mật 256-bit</p>
+      </form>
+
+      <!-- Tom tat don -->
+      <aside>
+        <div class="card">
+          <div class="summary-head">Tóm tắt đơn hàng</div>
+          <div class="summary-body">
+            <div class="summary-row"><span class="muted">MÃ ĐƠN</span>
+              <strong th:text="'#' + ${#strings.substring(booking.bookingId.toString(),0,8)}">#BT88</strong></div>
+            <div class="summary-row"><span class="muted">HÀNH TRÌNH</span>
+              <strong th:text="${booking.destinationFrom} + ' → ' + ${booking.destinationTo}">Hà Nội → Sa Pa</strong></div>
+            <div class="summary-row"><span class="muted">GIỜ ĐI</span>
+              <strong th:text="${#temporals.format(booking.departureTime, 'HH:mm dd/MM/yyyy')}">22:00</strong></div>
+            <div class="summary-row"><span class="muted">GHẾ/VÉ</span>
+              <strong th:text="${#strings.listJoin(booking.tickets.![seatCode], ', ')}">A12, A13</strong></div>
+            <hr style="border:none;border-top:1px solid var(--outline-variant);margin:12px 0;"/>
+            <div class="summary-row" th:each="t : ${booking.tickets}">
+              <span th:text="'Ghế ' + ${t.seatCode} + ' — ' + ${t.passengerName}">Ghế A12</span>
+              <span th:text="${#numbers.formatInteger(t.subTotal, 0, 'POINT')} + 'đ'">300.000đ</span>
+            </div>
+            <div class="summary-total"><span>Tổng thanh toán</span>
+              <span th:text="${#numbers.formatInteger(booking.totalPrice, 0, 'POINT')} + 'đ'">595.000đ</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{customer/fragments/layout :: footer}"></div>
+</body>
+</html>
