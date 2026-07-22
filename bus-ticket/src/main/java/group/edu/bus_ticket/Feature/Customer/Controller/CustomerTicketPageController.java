@@ -8,6 +8,7 @@ import group.edu.bus_ticket.Feature.Customer.Dto.ReviewRequest;
 import group.edu.bus_ticket.Feature.Customer.Service.CustomerCancelService;
 import group.edu.bus_ticket.Feature.Customer.Service.CustomerMyTicketService;
 import group.edu.bus_ticket.Feature.Customer.Service.CustomerReviewService;
+import group.edu.bus_ticket.Infrastructure.Persistence.Payment.PaymentJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.Review.ReviewJpaRepo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,17 +33,20 @@ public class CustomerTicketPageController {
     private final CustomerCancelService cancelService;
     private final CustomerReviewService reviewService;
     private final ReviewJpaRepo reviewRepo;
+    private final PaymentJpaRepo paymentRepo;
     private final CurrentCustomerService currentCustomer;
 
     public CustomerTicketPageController(CustomerMyTicketService myTicketService,
                                         CustomerCancelService cancelService,
                                         CustomerReviewService reviewService,
                                         ReviewJpaRepo reviewRepo,
+                                        PaymentJpaRepo paymentRepo,
                                         CurrentCustomerService currentCustomer) {
         this.myTicketService = myTicketService;
         this.cancelService = cancelService;
         this.reviewService = reviewService;
         this.reviewRepo = reviewRepo;
+        this.paymentRepo = paymentRepo;
         this.currentCustomer = currentCustomer;
     }
 
@@ -88,6 +92,7 @@ public class CustomerTicketPageController {
         BookingResponse booking = myTicketService.getMyBooking(bookingId, currentCustomer.getAccountId());
         model.addAttribute("booking", booking);
         model.addAttribute("canReview", !reviewRepo.existsByBooking_Id(bookingId));
+        model.addAttribute("payment", paymentRepo.findByBooking_Id(bookingId).orElse(null));
         return "customer/booking-detail";
     }
 

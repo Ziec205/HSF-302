@@ -58,6 +58,21 @@
         <span th:text="${#numbers.formatInteger(booking.totalPrice, 0, 'POINT')} + 'đ'">350.000đ</span></div>
     </div>
 
+    <!-- Thong tin thanh toan (khi da thanh toan) -->
+    <div class="card card-pad mb-3" th:if="${payment != null}">
+      <h3>Thông tin thanh toán</h3>
+      <div class="summary-row"><span class="muted">Mã giao dịch</span>
+        <strong th:text="${payment.transactionCode}">SIMPAY-1A2B3C4D</strong></div>
+      <div class="summary-row"><span class="muted">Phương thức</span>
+        <span th:text="${payment.paymentMethod}">CASH</span></div>
+      <div class="summary-row"><span class="muted">Số tiền</span>
+        <span th:text="${#numbers.formatInteger(payment.amount, 0, 'POINT')} + 'đ'">350.000đ</span></div>
+      <div class="summary-row"><span class="muted">Trạng thái</span>
+        <span class="badge badge-confirmed" th:text="${payment.status}">PAID</span></div>
+      <div class="summary-row" th:if="${payment.paidAt != null}"><span class="muted">Thời điểm</span>
+        <span th:text="${#temporals.format(payment.paidAt, 'HH:mm dd/MM/yyyy')}">10:00 24/10/2026</span></div>
+    </div>
+
     <!-- Hanh dong -->
     <div class="flex gap-2 wrap">
       <a th:if="${booking.status.name() == 'PENDING_PAYMENT'}" class="btn btn-accent btn-lg"

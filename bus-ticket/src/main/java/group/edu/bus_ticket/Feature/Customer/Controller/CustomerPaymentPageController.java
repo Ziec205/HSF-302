@@ -1,6 +1,8 @@
 package group.edu.bus_ticket.Feature.Customer.Controller;
 
+import group.edu.bus_ticket.Domain.Enum.PaymentMethod;
 import group.edu.bus_ticket.Feature.Customer.CurrentCustomerService;
+import group.edu.bus_ticket.Feature.Customer.Dto.PaymentResponse;
 import group.edu.bus_ticket.Feature.Customer.Service.CustomerMyTicketService;
 import group.edu.bus_ticket.Feature.Customer.Service.CustomerPaymentService;
 import org.springframework.stereotype.Controller;
@@ -10,11 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
 
 /**
- * Trang E3 - Thanh toan (Thymeleaf). Ban placeholder: xac nhan don -> CONFIRMED.
+ * Trang E3 - Thanh toan (Thymeleaf, khong JS). Gia lap cong thanh toan.
  */
 @Controller
 public class CustomerPaymentPageController {
@@ -39,11 +42,13 @@ public class CustomerPaymentPageController {
 
     @PostMapping("/customer/payment/{bookingId}")
     public String pay(@PathVariable UUID bookingId,
-                      @RequestParam(required = false) String method,
-                      Model model) {
+                      @RequestParam(required = false) PaymentMethod method,
+                      Model model, RedirectAttributes ra) {
         try {
-            paymentService.confirmPayment(bookingId, currentCustomer.getAccountId());
-            return "redirect:/customer/tickets/" + bookingId + "?paid=1";
+            PaymentResponse res = paymentService.pay(bookingId, currentCustomer.getAccountId(), method);
+            ra.addFlashAttribute("flash", "Thanh toán thành công! Mã giao dịch: " + res.transactionCode()
+                    + " • Số tiền: " + (res.amount() != null ? res.amount().longValue() : 0) + "đ");
+            return "redirect:/customer/tickets/" + bookingId;
         } catch (ResponseStatusException ex) {
             model.addAttribute("error", ex.getReason());
             model.addAttribute("booking", myTicketService.getMyBooking(bookingId, currentCustomer.getAccountId()));
