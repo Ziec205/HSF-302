@@ -1,9 +1,11 @@
 package group.edu.bus_ticket.Domain.Entity;
 
+import group.edu.bus_ticket.Domain.Enum.SeatStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,6 +25,13 @@ public class SeatAvailability {
 
     @Min(value = 0, message = "end station order can not negative")
     private Integer endStationOrder;
+
+    // Trang thai ghe cho chuyen nay: AVAILABLE -> HELD (giu tam) -> BOOKED (da dat).
+    @Enumerated(EnumType.STRING)
+    private SeatStatus status = SeatStatus.AVAILABLE;
+
+    // Thoi diem het han giu ghe tam (chi co y nghia khi status = HELD).
+    private LocalDateTime heldUntil;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_detail_id")
@@ -73,6 +82,22 @@ public class SeatAvailability {
 
     public void setEndStationOrder(Integer endStationOrder) {
         this.endStationOrder = endStationOrder;
+    }
+
+    public SeatStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SeatStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getHeldUntil() {
+        return heldUntil;
+    }
+
+    public void setHeldUntil(LocalDateTime heldUntil) {
+        this.heldUntil = heldUntil;
     }
 
     public BookingDetail getBookingDetail() {

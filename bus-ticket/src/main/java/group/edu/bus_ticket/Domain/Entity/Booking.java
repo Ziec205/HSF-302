@@ -1,5 +1,6 @@
 package group.edu.bus_ticket.Domain.Entity;
 
+import group.edu.bus_ticket.Domain.Enum.BookingStatus;
 import group.edu.bus_ticket.Domain.Enum.BookingType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -25,6 +26,13 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     private BookingType bookingType;
+
+    // Trang thai don dat ve (Customer): PENDING_PAYMENT -> CONFIRMED / CANCELLED / EXPIRED ...
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
+
+    // Han giu ghe tam: neu chua thanh toan truoc thoi diem nay -> tu dong giai phong ghe.
+    private LocalDateTime holdExpiresAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
@@ -83,6 +91,22 @@ public class Booking {
 
     public void setBookingType(BookingType bookingType) {
         this.bookingType = bookingType;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getHoldExpiresAt() {
+        return holdExpiresAt;
+    }
+
+    public void setHoldExpiresAt(LocalDateTime holdExpiresAt) {
+        this.holdExpiresAt = holdExpiresAt;
     }
 
     public void setAccount(Account account) {
