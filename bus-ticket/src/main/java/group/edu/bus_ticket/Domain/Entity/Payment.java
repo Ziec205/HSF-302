@@ -1,6 +1,7 @@
 package group.edu.bus_ticket.Domain.Entity;
 
 import group.edu.bus_ticket.Domain.Enum.PaymentMethod;
+import group.edu.bus_ticket.Domain.Enum.PaymentStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,19 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    // So tien thanh toan
+    private Double amount;
+
+    // Trang thai thanh toan: PENDING -> PAID / FAILED / REFUNDED
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
+
+    // Ma giao dich gia lap (mo phong cong thanh toan)
+    private String transactionCode;
+
+    // Thoi diem thanh toan thanh cong
+    private LocalDateTime paidAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
@@ -54,6 +68,38 @@ public class Payment {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
+
+    public String getTransactionCode() {
+        return transactionCode;
+    }
+
+    public void setTransactionCode(String transactionCode) {
+        this.transactionCode = transactionCode;
+    }
+
+    public LocalDateTime getPaidAt() {
+        return paidAt;
+    }
+
+    public void setPaidAt(LocalDateTime paidAt) {
+        this.paidAt = paidAt;
     }
 
     public Booking getBooking() {
