@@ -9,10 +9,9 @@ import group.edu.bus_ticket.Application.Dto.ReviewRequest;
 import group.edu.bus_ticket.Application.Dto.ReviewResponse;
 import group.edu.bus_ticket.Infrastructure.Persistence.Review.ReviewJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.SeatAvailability.SeatAvailabilityJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,20 +46,20 @@ public class CustomerReviewService {
         BookingStatus status = booking.getStatus();
         if (status == BookingStatus.CANCELLED || status == BookingStatus.EXPIRED
                 || status == BookingStatus.REFUNDED || status == BookingStatus.REFUND_PENDING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Don da huy/hoan, khong the danh gia");
+            throw new BusinessException("Don da huy/hoan, khong the danh gia");
         }
 
         if (reviewRepo.existsByBooking_Id(req.bookingId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Don nay da duoc danh gia");
+            throw new BusinessException("Don nay da duoc danh gia");
         }
 
         Trip trip = findTrip(req.bookingId());
         if (trip == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khong xac dinh duoc chuyen di de danh gia");
+            throw new BusinessException("Khong xac dinh duoc chuyen di de danh gia");
         }
         // Chi cho danh gia sau khi chuyen da khoi hanh (coi nhu da hoan thanh).
         if (trip.getDepartureTime() == null || trip.getDepartureTime().isAfter(LocalDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chua the danh gia khi chuyen chua hoan thanh");
+            throw new BusinessException("Chua the danh gia khi chuyen chua hoan thanh");
         }
 
         Review review = new Review();

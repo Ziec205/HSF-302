@@ -3,9 +3,8 @@ package group.edu.bus_ticket.Application.Service;
 import group.edu.bus_ticket.Domain.Entity.Account;
 import group.edu.bus_ticket.Domain.Enum.Role;
 import group.edu.bus_ticket.Infrastructure.Persistence.Account.AccountJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.util.UUID;
 
@@ -31,8 +30,7 @@ public class CurrentCustomerService {
         return accountRepo.findAll().stream()
                 .filter(a -> a.getRole() == Role.CUSTOMER)
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                        "Chua co tai khoan khach hang. Hay chay profile 'dev' de seed du lieu mau."));
+                .orElseThrow(() -> new BusinessException("Chua co tai khoan khach hang. Hay chay profile 'dev' de seed du lieu mau."));
     }
 
     public UUID getAccountId() {

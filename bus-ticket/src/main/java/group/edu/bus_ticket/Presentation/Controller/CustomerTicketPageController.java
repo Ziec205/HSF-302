@@ -13,7 +13,7 @@ import group.edu.bus_ticket.Infrastructure.Persistence.Review.ReviewJpaRepo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -104,8 +104,8 @@ public class CustomerTicketPageController {
             ra.addFlashAttribute("flash", res.message()
                     + (res.refundAmount() != null && res.refundAmount() > 0
                     ? " (Hoàn: " + res.refundAmount().longValue() + "đ)" : ""));
-        } catch (ResponseStatusException ex) {
-            ra.addFlashAttribute("error", ex.getReason());
+        } catch (BusinessException ex) {
+            ra.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/customer/tickets/" + bookingId;
     }
@@ -126,8 +126,8 @@ public class CustomerTicketPageController {
             reviewService.createReview(new ReviewRequest(bookingId, currentCustomer.getAccountId(), rating, comment));
             ra.addFlashAttribute("flash", "Cảm ơn bạn đã đánh giá chuyến đi!");
             return "redirect:/customer/tickets/" + bookingId;
-        } catch (ResponseStatusException ex) {
-            model.addAttribute("error", ex.getReason());
+        } catch (BusinessException ex) {
+            model.addAttribute("error", ex.getMessage());
             model.addAttribute("booking", myTicketService.getMyBooking(bookingId, currentCustomer.getAccountId()));
             return "customer/review";
         }

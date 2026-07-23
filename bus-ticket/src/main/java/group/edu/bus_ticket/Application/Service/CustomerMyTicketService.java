@@ -5,10 +5,9 @@ import group.edu.bus_ticket.Domain.Entity.BookingDetail;
 import group.edu.bus_ticket.Application.Dto.BookingResponse;
 import group.edu.bus_ticket.Infrastructure.Persistence.Booking.BookingDetailJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.Booking.BookingJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.util.List;
 import java.util.UUID;
@@ -52,9 +51,9 @@ public class CustomerMyTicketService {
     /** Tai booking va kiem tra quyen so huu - dung chung cho E4/E5/E6. */
     Booking loadOwnedBooking(UUID bookingId, UUID accountId) {
         Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khong tim thay don dat ve"));
+                .orElseThrow(() -> new BusinessException("Khong tim thay don dat ve"));
         if (booking.getAccount() == null || !booking.getAccount().getId().equals(accountId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ban khong co quyen tren don dat ve nay");
+            throw new BusinessException("Ban khong co quyen tren don dat ve nay");
         }
         return booking;
     }

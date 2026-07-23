@@ -18,10 +18,9 @@ import group.edu.bus_ticket.Infrastructure.Persistence.Booking.BookingJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.SeatAvailability.SeatAvailabilityJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.Trip.TripJpaRepo;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class CustomerBookingService {
     /** So do ghe cua mot chuyen (E2). */
     public List<SeatDto> getSeatMap(UUID tripId) {
         tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khong tim thay chuyen"));
+                .orElseThrow(() -> new BusinessException("Khong tim thay chuyen"));
         LocalDateTime now = LocalDateTime.now();
         return seatRepo.findByTrip_IdOrderBySeatCode(tripId).stream()
                 .map(s -> new SeatDto(s.getSeatCode(), s.getStatus(), CustomerTripService.isSeatFree(s, now)))
@@ -85,27 +84,26 @@ public class CustomerBookingService {
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest req) {
         Account account = accountRepo.findById(req.accountId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khong tim thay tai khoan"));
+                .orElseThrow(() -> new BusinessException("Khong tim thay tai khoan"));
         Trip trip = tripRepo.findById(req.tripId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khong tim thay chuyen"));
+                .orElseThrow(() -> new BusinessException("Khong tim thay chuyen"));
 
         LocalDateTime now = LocalDateTime.now();
         if (trip.getStatus() != Status.AVAILABLE
                 || (trip.getDepartureTime() != null && !trip.getDepartureTime().isAfter(now))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chuyen da khoi hanh hoac khong con ban ve");
+            throw new BusinessException("Chuyen da khoi hanh hoac khong con ban ve");
         }
 
         List<PassengerRequest> passengers = req.passengers();
         if (passengers.size() > MAX_SEATS_PER_BOOKING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Toi da " + MAX_SEATS_PER_BOOKING + " ghe cho mot lan dat");
+            throw new BusinessException("Toi da " + MAX_SEATS_PER_BOOKING + " ghe cho mot lan dat");
         }
 
         // Chan chon trung ma ghe trong cung yeu cau.
         List<String> codes = passengers.stream().map(PassengerRequest::seatCode).collect(Collectors.toList());
         Set<String> uniqueCodes = new HashSet<>(codes);
         if (uniqueCodes.size() != codes.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Danh sach ghe bi trung");
+            throw new BusinessException("Danh sach ghe bi trung");
         }
 
         // Khoa bi quan cac ghe -> tranh 2 nguoi dat trung 1 ghe.
@@ -115,10 +113,10 @@ public class CustomerBookingService {
         for (String code : codes) {
             SeatAvailability seat = seatByCode.get(code);
             if (seat == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ghe " + code + " khong ton tai tren chuyen");
+                throw new BusinessException("Ghe " + code + " khong ton tai tren chuyen");
             }
             if (!CustomerTripService.isSeatFree(seat, now)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Ghe " + code + " khong con trong");
+                throw new BusinessException("Ghe " + code + " khong con trong");
             }
         }
 

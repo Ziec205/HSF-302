@@ -8,13 +8,12 @@ import group.edu.bus_ticket.Application.Dto.PassengerRequest;
 import group.edu.bus_ticket.Application.Service.CustomerBookingService;
 import group.edu.bus_ticket.Application.Service.PricingService;
 import group.edu.bus_ticket.Infrastructure.Persistence.Trip.TripJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +54,13 @@ public class CustomerBookingPageController {
                                 Model model) {
         try {
             if (selectedSeats == null || selectedSeats.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vui lòng chọn ít nhất 1 ghế");
+                throw new BusinessException("Vui lòng chọn ít nhất 1 ghế");
             }
             List<PassengerRequest> passengers = new ArrayList<>();
             for (String code : selectedSeats) {
                 String name = allParams.get("name_" + code);
                 if (name == null || name.isBlank()) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            "Vui lòng nhập tên hành khách cho ghế " + code);
+                    throw new BusinessException("Vui lòng nhập tên hành khách cho ghế " + code);
                 }
                 Double luggage = parseDouble(allParams.get("luggage_" + code));
                 passengers.add(new PassengerRequest(code, name.trim(), luggage));
@@ -73,8 +71,8 @@ public class CustomerBookingPageController {
             var response = bookingService.createBooking(req);
             return "redirect:/customer/payment/" + response.bookingId();
 
-        } catch (ResponseStatusException ex) {
-            model.addAttribute("error", ex.getReason());
+        } catch (BusinessException ex) {
+            model.addAttribute("error", ex.getMessage());
             populate(model, tripId);
             return "customer/book";
         }
@@ -82,7 +80,7 @@ public class CustomerBookingPageController {
 
     private void populate(Model model, UUID tripId) {
         Trip trip = tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy chuyến"));
+                .orElseThrow(() -> new BusinessException("Không tìm thấy chuyến"));
         model.addAttribute("trip", trip);
         model.addAttribute("seats", bookingService.getSeatMap(tripId));
         model.addAttribute("basePrice", pricingService.calcTicketPrice(trip, null, null));

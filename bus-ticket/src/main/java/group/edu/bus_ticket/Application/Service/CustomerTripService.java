@@ -7,9 +7,8 @@ import group.edu.bus_ticket.Domain.Enum.Status;
 import group.edu.bus_ticket.Application.Dto.TripSearchResponse;
 import group.edu.bus_ticket.Infrastructure.Persistence.SeatAvailability.SeatAvailabilityJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.Trip.TripJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,16 +35,16 @@ public class CustomerTripService {
 
     public List<TripSearchResponse> searchTrips(String from, String to, LocalDate date) {
         if (from == null || from.isBlank() || to == null || to.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vui long nhap diem di va diem den");
+            throw new BusinessException("Vui long nhap diem di va diem den");
         }
         if (from.trim().equalsIgnoreCase(to.trim())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Diem di va diem den khong duoc trung nhau");
+            throw new BusinessException("Diem di va diem den khong duoc trung nhau");
         }
         if (date == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vui long chon ngay di");
+            throw new BusinessException("Vui long chon ngay di");
         }
         if (date.isBefore(LocalDate.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ngay di khong duoc trong qua khu");
+            throw new BusinessException("Ngay di khong duoc trong qua khu");
         }
 
         LocalDateTime start = date.atStartOfDay();

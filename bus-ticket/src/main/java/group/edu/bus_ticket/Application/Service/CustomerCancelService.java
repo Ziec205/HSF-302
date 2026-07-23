@@ -6,10 +6,9 @@ import group.edu.bus_ticket.Domain.Enum.BookingStatus;
 import group.edu.bus_ticket.Application.Dto.CancelBookingResponse;
 import group.edu.bus_ticket.Infrastructure.Persistence.Booking.BookingJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.SeatAvailability.SeatAvailabilityJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -56,13 +55,13 @@ public class CustomerCancelService {
         BookingStatus status = booking.getStatus();
         if (status == BookingStatus.CANCELLED || status == BookingStatus.EXPIRED
                 || status == BookingStatus.REFUNDED || status == BookingStatus.REFUND_PENDING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Don dat ve nay da bi huy hoac dang xu ly hoan tien");
+            throw new BusinessException("Don dat ve nay da bi huy hoac dang xu ly hoan tien");
         }
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime departure = findDepartureTime(bookingId);
         if (departure != null && !departure.isAfter(now)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chuyen da khoi hanh, khong the huy ve");
+            throw new BusinessException("Chuyen da khoi hanh, khong the huy ve");
         }
 
         // Tra ghe ve trang thai trong.

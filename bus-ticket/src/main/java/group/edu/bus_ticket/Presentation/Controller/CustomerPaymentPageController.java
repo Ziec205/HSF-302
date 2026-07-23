@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
@@ -49,8 +49,8 @@ public class CustomerPaymentPageController {
             ra.addFlashAttribute("flash", "Thanh toán thành công! Mã giao dịch: " + res.transactionCode()
                     + " • Số tiền: " + (res.amount() != null ? res.amount().longValue() : 0) + "đ");
             return "redirect:/customer/tickets/" + bookingId;
-        } catch (ResponseStatusException ex) {
-            model.addAttribute("error", ex.getReason());
+        } catch (BusinessException ex) {
+            model.addAttribute("error", ex.getMessage());
             model.addAttribute("booking", myTicketService.getMyBooking(bookingId, currentCustomer.getAccountId()));
             return "customer/payment";
         }

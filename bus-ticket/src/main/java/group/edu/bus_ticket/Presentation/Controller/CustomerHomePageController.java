@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,8 +49,8 @@ public class CustomerHomePageController {
         if (from != null && to != null && date != null) {
             try {
                 model.addAttribute("trips", tripService.searchTrips(from, to, date));
-            } catch (ResponseStatusException ex) {
-                model.addAttribute("error", ex.getReason());
+            } catch (BusinessException ex) {
+                model.addAttribute("error", ex.getMessage());
             }
         }
         return "customer/search";

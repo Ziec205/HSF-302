@@ -14,10 +14,9 @@ import group.edu.bus_ticket.Infrastructure.Persistence.Booking.BookingJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.Payment.PaymentJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.SeatAvailability.SeatAvailabilityJpaRepo;
 import group.edu.bus_ticket.Infrastructure.Persistence.Transaction.TransactionJpaRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import group.edu.bus_ticket.Domain.Exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,10 +67,10 @@ public class CustomerPaymentService {
                     payMethod, PaymentStatus.PAID, booking.getStatus(), null);
         }
         if (booking.getStatus() != BookingStatus.PENDING_PAYMENT) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Don khong o trang thai cho thanh toan");
+            throw new BusinessException("Don khong o trang thai cho thanh toan");
         }
         if (booking.getHoldExpiresAt() != null && booking.getHoldExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Het thoi gian giu ghe, vui long dat lai");
+            throw new BusinessException("Het thoi gian giu ghe, vui long dat lai");
         }
 
         LocalDateTime now = LocalDateTime.now();
